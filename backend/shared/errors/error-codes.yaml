@@ -1,0 +1,42 @@
+# Error Codes
+
+Standard error codes returned by the Prova API.
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `unauthorized` | 401 | Missing or invalid API key |
+| `forbidden` | 403 | API key lacks required permissions |
+| `not_found` | 404 | Resource not found |
+| `bad_request` | 400 | Invalid request format or parameters |
+| `unsupported_prover` | 422 | Requested prover is not supported |
+| `verification_failed` | 422 | Proof verification failed |
+| `rate_limited` | 429 | Too many requests |
+| `internal_error` | 500 | Internal server error |
+
+## Error Response Format
+
+```json
+{
+  "error": "Description of the error"
+}
+```
+
+## Gateway Error Mapping
+
+Rust `ApiError` enum maps to these codes:
+
+```rust
+pub enum ApiError {
+    Unauthorized,           // 401
+    Forbidden,              // 403
+    NotFound,               // 404
+    ProofNotFound,          // 404
+    BadRequest(String),     // 400
+    UnsupportedProver(String), // 422
+    VerificationFailed(String), // 422
+    RateLimited,            // 429
+    InternalError,          // 500
+    DatabaseError,          // 500
+    VerifierError(String),  // 502
+}
+```

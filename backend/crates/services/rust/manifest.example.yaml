@@ -1,0 +1,54 @@
+# Example manifest.yaml for a Rust-based ZK proof verifier
+# This file should be placed in the ARTIFACTS_DIR alongside the verifier binaries
+
+prover: "zisk"
+description: "Zero-knowledge proof verifier using the Zisk proving system"
+
+versions:
+  # Main production version
+  - version: "v1.2.3"
+    active: true # Only one version can be active at a time
+    bin_path: "bin/zisk-verifier" # Relative to ARTIFACTS_DIR
+    sha256: "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456" # Required for security
+    interface:
+      type: "cli" # Currently only "cli" is supported
+      verify_command: "verify" # Optional subcommand
+      args:
+        proof: "--proof-file {proof_file}" # {proof_file} is replaced at runtime
+        public_inputs: "--inputs-file {inputs_file}" # {inputs_file} is replaced at runtime
+        vk: "--vk-file {vk_file}" # {vk_file} is replaced at runtime
+        vk_path: "vks/circuit.vk" # Relative to ARTIFACTS_DIR
+      success_exit_code: 0 # Exit code for successful verification (default: 0)
+      output_format: "json" # "json" or "exit_code_only" (default: exit_code_only)
+
+  # Development/testing version (inactive)
+  - version: "v1.2.4-beta"
+    active: false
+    bin_path: "bin/zisk-verifier-beta"
+    sha256: "b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567"
+    interface:
+      type: "cli"
+      verify_command: "verify"
+      args:
+        proof: "--proof {proof_file}"
+        public_inputs: "--inputs {inputs_file}"
+        vk: "--verification-key {vk_file}"
+        vk_path: "vks/circuit-v2.vk"
+      success_exit_code: 0
+      output_format: "exit_code_only"
+# Example directory structure this manifest expects:
+# /artifacts/
+# ├── manifest.yaml (this file)
+# ├── bin/
+# │   ├── zisk-verifier (executable)
+# │   └── zisk-verifier-beta (executable)
+# └── vks/
+#     ├── circuit.vk
+#     └── circuit-v2.vk
+
+# Notes:
+# - Only one version can have active: true
+# - sha256 checksum is always required for security
+# - Placeholders {proof_file}, {inputs_file}, {vk_file} are replaced at runtime
+# - All paths are relative to ARTIFACTS_DIR environment variable
+# - Binary must be executable (chmod +x)

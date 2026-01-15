@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package prova.verifier.v1;
+
+service Verifier {
+  rpc Verify(VerifyRequest) returns (VerifyResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
+
+message VerifyRequest {
+  bytes proof = 1;
+  repeated string public_inputs = 2;
+  string proof_system = 3;
+}
+
+message VerifyResponse {
+  bool valid = 1;
+  string prover_version = 2;
+  optional string error = 3;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  bool healthy = 1;
+  string version = 2;
+}
