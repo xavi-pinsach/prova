@@ -1,4 +1,4 @@
-FROM rust:1.91 as builder
+FROM rust:1.92 as builder
 
 RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
 
@@ -16,7 +16,7 @@ COPY crates/services/rust/src ./src
 
 RUN touch src/main.rs && cargo build --release
 
-FROM rust:1.91-slim
+FROM rust:1.92-slim
 
 # Install minimal runtime libraries for mock binary
 RUN apt-get update && apt-get install -y \
